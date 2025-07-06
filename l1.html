@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <title>Anton Platformer 2</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- 🧠 Anton som browser-logo -->
+  
+  <!-- Browser-fane ikon -->
   <link rel="icon" type="image/png" href="antonersød.png">
 
   <style>
@@ -103,22 +103,23 @@
       anton.vy += 0.3;
       anton.y += anton.vy;
 
-      // Antag han er i luften indtil vi tjekker platforme
-      anton.jumping = true;
+      let onGround = false;
 
       for (let p of platforms) {
-        const onTop = anton.vy >= 0 &&
+        const hitFromTop = anton.vy >= 0 &&
           anton.x + anton.w > p.x &&
           anton.x < p.x + p.w &&
-          anton.y + anton.h <= p.y &&
+          anton.y + anton.h <= p.y + 5 &&
           anton.y + anton.h + anton.vy >= p.y;
 
-        if (onTop) {
+        if (hitFromTop) {
           anton.y = p.y - anton.h;
           anton.vy = 0;
-          anton.jumping = false;
+          onGround = true;
         }
       }
+
+      anton.jumping = !onGround;
 
       // Saml æbler
       for (let i = apples.length - 1; i >= 0; i--) {
@@ -136,9 +137,11 @@
         }
       }
 
-      // Faldt ud af verden
+      // Fald ned
       if (anton.y > canvas.height) {
-        anton.x = 50; anton.y = 0; anton.vy = 0;
+        anton.x = 50;
+        anton.y = 0;
+        anton.vy = 0;
         score = 0;
         alert("Anton faldt ned! 😢");
       }
@@ -147,21 +150,17 @@
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Platforme
       for (let p of platforms) {
         ctx.drawImage(imgStony, p.x, p.y, p.w, p.h);
       }
 
-      // Anton
       ctx.drawImage(imgAnton, anton.x, anton.y, anton.w, anton.h);
 
-      // Æbler
       for (let a of apples) {
         const img = a.rotten ? imgRotten : imgApple;
         ctx.drawImage(img, a.x, a.y, a.w, a.h);
       }
 
-      // Score
       ctx.fillStyle = "black";
       ctx.font = "16px Arial";
       ctx.fillText("Score: " + score, 10, 20);
