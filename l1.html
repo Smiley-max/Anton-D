@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Anton Platformer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" href="antonersød.png">
   <style>
     canvas {
       background: #d0f0ff;
@@ -31,7 +30,8 @@
       onmousedown="moveLeft()" onmouseup="stopMove()"
       ontouchstart="moveLeft()" ontouchend="stopMove()">⬅️</button>
 
-    <button class="btn" onclick="jump()">⬆️</button>
+    <button class="btn"
+      onclick="jump()">⬆️</button>
 
     <button class="btn"
       onmousedown="moveRight()" onmouseup="stopMove()"
@@ -42,7 +42,7 @@
     const canvas = document.getElementById("game");
     const ctx = canvas.getContext("2d");
 
-    // Billeder
+    // 🎨 Textures
     const imgAnton = new Image(); imgAnton.src = "antonersød.png";
     const imgApple = new Image(); imgApple.src = "gapple.png";
     const imgRotten = new Image(); imgRotten.src = "rotten.png";
@@ -64,7 +64,7 @@
     ];
 
     let apples = [
-      {x: 110, y: 190, w: 24, h: 24, rotten: false},
+      {x: 110, y: 190, w: 15, h: 15, rotten: false},
       {x: 260, y: 150, w: 15, h: 15, rotten: true}
     ];
 
@@ -128,7 +128,9 @@
       }
 
       if (anton.y > canvas.height) {
-        anton.x = 50; anton.y = 0; anton.vy = 0;
+        anton.x = 50;
+        anton.y = 0;
+        anton.vy = 0;
         score = 0;
         alert("Anton faldt ned! 😢");
       }
@@ -137,15 +139,15 @@
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      // Anton
+      ctx.drawImage(imgAnton, anton.x, anton.y, anton.w, anton.h);
+
       // Platforme
       for (let p of platforms) {
         ctx.drawImage(imgStony, p.x, p.y, p.w, p.h);
       }
 
-      // Anton
-      ctx.drawImage(imgAnton, anton.x, anton.y, anton.w, anton.h);
-
-      // Æbler
+      // Granatæbler
       for (let a of apples) {
         const img = a.rotten ? imgRotten : imgApple;
         ctx.drawImage(img, a.x, a.y, a.w, a.h);
@@ -167,3 +169,4 @@
   </script>
 </body>
 </html>
+
