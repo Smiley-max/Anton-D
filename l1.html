@@ -96,21 +96,28 @@
       if ((keys[" "] || keys["ArrowUp"]) && !anton.jumping) jump();
 
       anton.x += anton.vx;
-      anton.vy += 0.3;
+      anton.vy += 0.3;  // Tyngdekraft
       anton.y += anton.vy;
 
+      // Antag Anton er i luften, indtil vi tjekker
       anton.jumping = true;
+
+      // Tjek platform-kollision (fra toppen)
       for (let p of platforms) {
-        if (anton.x < p.x + p.w &&
-            anton.x + anton.w > p.x &&
-            anton.y + anton.h < p.y + 5 &&
-            anton.y + anton.h + anton.vy >= p.y) {
+        const onTop = anton.vy >= 0 &&
+          anton.x + anton.w > p.x &&
+          anton.x < p.x + p.w &&
+          anton.y + anton.h <= p.y &&
+          anton.y + anton.h + anton.vy >= p.y;
+
+        if (onTop) {
           anton.y = p.y - anton.h;
           anton.vy = 0;
           anton.jumping = false;
         }
       }
 
+      // Tjek æbler
       for (let i = apples.length - 1; i >= 0; i--) {
         const a = apples[i];
         if (anton.x < a.x + a.w &&
@@ -126,6 +133,7 @@
         }
       }
 
+      // Falder ud af verden
       if (anton.y > canvas.height) {
         anton.x = 50; anton.y = 0; anton.vy = 0;
         score = 0;
@@ -136,7 +144,7 @@
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Platforme (med billede)
+      // Platforme
       for (let p of platforms) {
         ctx.drawImage(imgStony, p.x, p.y, p.w, p.h);
       }
