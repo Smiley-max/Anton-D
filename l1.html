@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <title>Anton Platformer 2</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 🧠 Anton som browser-logo -->
+  <link rel="icon" type="image/png" href="antonersød.png">
+
   <style>
     canvas {
       background: #d0f0ff;
@@ -96,13 +100,12 @@
       if ((keys[" "] || keys["ArrowUp"]) && !anton.jumping) jump();
 
       anton.x += anton.vx;
-      anton.vy += 0.3;  // Tyngdekraft
+      anton.vy += 0.3;
       anton.y += anton.vy;
 
-      // Antag Anton er i luften, indtil vi tjekker
+      // Antag han er i luften indtil vi tjekker platforme
       anton.jumping = true;
 
-      // Tjek platform-kollision (fra toppen)
       for (let p of platforms) {
         const onTop = anton.vy >= 0 &&
           anton.x + anton.w > p.x &&
@@ -117,7 +120,7 @@
         }
       }
 
-      // Tjek æbler
+      // Saml æbler
       for (let i = apples.length - 1; i >= 0; i--) {
         const a = apples[i];
         if (anton.x < a.x + a.w &&
@@ -133,7 +136,7 @@
         }
       }
 
-      // Falder ud af verden
+      // Faldt ud af verden
       if (anton.y > canvas.height) {
         anton.x = 50; anton.y = 0; anton.vy = 0;
         score = 0;
