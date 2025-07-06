@@ -4,10 +4,7 @@
   <meta charset="UTF-8">
   <title>Anton Platformer 2</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Browser-favicon -->
   <link rel="icon" type="image/png" href="antonersød.png">
-
   <style>
     canvas {
       background: #d0f0ff;
@@ -58,8 +55,6 @@
       jumping: false
     };
 
-    let hopStrength = -8;
-
     const platforms = [
       {x: 0, y: 290, w: 480, h: 30},
       {x: 100, y: 220, w: 80, h: 10},
@@ -87,45 +82,47 @@
     }
 
     function jump() {
-      if (!anton.jumping && anton.vy >= -1 && anton.vy <= 1) {
-        anton.vy = hopStrength;
+      if (!anton.jumping) {
+        anton.vy = -8;
         anton.jumping = true;
       }
     }
 
     function update() {
       anton.vx = 0;
+
       if (keys["ArrowLeft"] || mobileLeft) anton.vx = -anton.speed;
       if (keys["ArrowRight"] || mobileRight) anton.vx = anton.speed;
-      if ((keys[" "] || keys["ArrowUp"]) && !anton.jumping) jump();
 
       anton.x += anton.vx;
-      anton.vy += 0.3;
+      anton.vy += 0.4; // Tyngdekraft
       anton.y += anton.vy;
 
-      let onGround = false;
+      let onPlatform = false;
 
       for (let p of platforms) {
+        const isAbove = anton.y + anton.h <= p.y;
+        const willFallThrough = anton.y + anton.h + anton.vy >= p.y;
         const withinX = anton.x + anton.w > p.x && anton.x < p.x + p.w;
-        const falling = anton.vy >= 0;
-        const justAbove = anton.y + anton.h <= p.y + 5;
-        const landing = anton.y + anton.h + anton.vy >= p.y;
 
-        if (withinX && falling && justAbove && landing) {
+        if (isAbove && willFallThrough && withinX && anton.vy >= 0) {
           anton.y = p.y - anton.h;
           anton.vy = 0;
-          onGround = true;
+          onPlatform = true;
         }
       }
 
-      anton.jumping = !onGround;
+      anton.jumping = !onPlatform;
 
+      // Saml æbler
       for (let i = apples.length - 1; i >= 0; i--) {
         const a = apples[i];
-        if (anton.x < a.x + a.w &&
-            anton.x + anton.w > a.x &&
-            anton.y < a.y + a.h &&
-            anton.y + anton.h > a.y) {
+        if (
+          anton.x < a.x + a.w &&
+          anton.x + anton.w > a.x &&
+          anton.y < a.y + a.h &&
+          anton.y + anton.h > a.y
+        ) {
           if (a.rotten) {
             score = Math.max(0, score - 1);
           } else {
